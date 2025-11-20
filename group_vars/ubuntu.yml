@@ -1,0 +1,9 @@
+# group_vars/ubuntu.yml
+docker_package_prereqs:
+  - apt-transport-https
+  - ca-certificates
+  - curl
+  - gnupg
+  - lsb-release
+docker_service_name: docker
+use_systemd: true

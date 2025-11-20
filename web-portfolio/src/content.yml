@@ -1,0 +1,26 @@
+{
+  "members": [
+    {
+      "name": "Alice Example",
+      "role": "Frontend",
+      "hoa": {
+        "prelim": "Link-to-prelim-HOA-or-summary",
+        "midterm": "Link-to-midterm-HOA-or-summary",
+        "finals": "Link-to-finals-HOA-or-summary"
+      },
+      "exams": {
+        "prelim": "PrelimExam.pdf",
+        "midterm": "MidtermExam.pdf",
+        "final": "FinalExam.pdf"
+      },
+      "reflection": "Short reflection by Alice on learnings and challenges."
+    },
+    {
+      "name": "Bob Example",
+      "role": "Infra",
+      "hoa": { "prelim": "..." },
+      "exams": { "prelim":"..." },
+      "reflection": "Short reflection by Bob."
+    }
+  ]
+}

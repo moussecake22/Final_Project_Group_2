@@ -1,0 +1,49 @@
+# run_containers.yml
+- name: Deploy web-portfolio containers to web hosts
+  hosts: all_web
+  serial: 1               # rolling / serial execution across hosts for reliability
+  become: yes
+  vars:
+    container_name: "{{ container_name_prefix }}-{{ inventory_hostname | regex_replace('[^A-Za-z0-9_-]','') }}"
+    full_image: "{{ image_name }}:{{ version }}"
+  tasks:
+    - name: Ensure the image is present (local build left image)
+      community.docker.docker_image:
+        name: "{{ image_name }}"
+        tag: "{{ version }}"
+        source: local
+        load_path: ""
+        state: present
+      tags: ensure_image
+
+    - name: Stop and remove existing container if present
+      community.docker.docker_container:
+        name: "{{ container_name }}"
+        state: absent
+        force_kill: yes
+        remove_volumes: no
+      tags: cleanup
+
+    - name: Run new container
+      community.docker.docker_container:
+        name: "{{ container_name }}"
+        image: "{{ full_image }}"
+        state: started
+        restart_policy: always
+        published_ports:
+          - "{{ host_port }}:{{ container_port }}"
+        restart: yes
+        recreate: yes
+        detach: yes
+      tags: run
+
+    - name: Wait for HTTP endpoint to respond
+      uri:
+        url: "http://localhost:{{ host_port }}"
+        status_code: 200
+        timeout: 5
+      register: result
+      retries: 6
+      delay: 3
+      until: result.status == 200
+      tags: verify

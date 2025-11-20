@@ -1,0 +1,7 @@
+# group_vars/all_web.yml
+version: "1.0.0"            # bump this to rebuild with new tag
+image_name: "web-portfolio"
+container_port: 80
+host_port: 8080
+container_name_prefix: "webport"
+nginx_conf_path: "/etc/nginx/conf.d/default.conf"  # used if you copy config locally on host (not necessary for container)

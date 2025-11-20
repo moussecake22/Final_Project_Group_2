@@ -1,0 +1,62 @@
+# build_image.yml
+- name: Ensure docker is installed and build image on all_web
+  hosts: all_web
+  become: yes
+  gather_facts: yes
+  vars:
+    local_artifact_dir: "./"   # path where playbook is run; contains Dockerfile and src/
+    remote_artifact_dir: "/tmp/web-portfolio"
+  pre_tasks:
+    - name: Ensure remote artifact dir exists
+      file:
+        path: "{{ remote_artifact_dir }}"
+        state: directory
+        mode: '0755'
+
+  tasks:
+    - name: Include OS-specific docker install tasks
+      include_tasks: docker_install.yml
+      tags: docker_install
+
+    - name: Ensure docker service is enabled and started
+      service:
+        name: "{{ docker_service_name | default('docker') }}"
+        state: started
+        enabled: yes
+      notify: Docker service started
+      tags: docker_service
+
+    - name: Copy web artifact (Dockerfile + src) to remote
+      copy:
+        src: "{{ item.src }}"
+        dest: "{{ remote_artifact_dir }}/{{ item.dest | default(item.src) }}"
+        owner: root
+        mode: '0644'
+      with_items:
+        - { src: "Dockerfile" }
+        - { src: "nginx.conf" }
+      tags: copy_artifacts
+
+    - name: Synchronize src/ directory (fast and efficient)
+      synchronize:
+        src: "src/"
+        dest: "{{ remote_artifact_dir }}/src/"
+        rsync_opts: ["--archive", "--delete"]
+      delegate_to: localhost
+      tags: copy_artifacts
+
+    - name: Build docker image using community.docker.docker_image
+      community.docker.docker_image:
+        path: "{{ remote_artifact_dir }}"
+        name: "{{ image_name }}"
+        tag: "{{ version }}"
+        push: no
+        pull: yes
+        state: present
+      register: built_image
+      tags: build
+
+  handlers:
+    - name: Docker service started
+      debug:
+        msg: "Docker service has been started or confirmed running on {{ inventory_hostname }}"

@@ -1,0 +1,36 @@
+<!-- src/index.html
+     Minimal index that lists members and sections. Uses content.yml (or content.json)
+     to avoid duplicating HTML for each member.
+-->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Team Portfolio - Web Portfolio</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header>
+    <h1>Team Portfolio</h1>
+    <nav id="members-nav"></nav>
+  </header>
+
+  <main id="main">
+    <section id="intro">
+      <h2>Welcome</h2>
+      <p>This static site contains Prelim/Midterm/Final HOAs and Exams, plus Reflections per member.</p>
+    </section>
+
+    <section id="member-section" hidden>
+      <!-- member details injected by app.js -->
+    </section>
+  </main>
+
+  <footer>
+    <small>Project deliverables: Prelim HOA, Midterm HOA, Finals HOA, Prelim Exam, Midterm Exam, Final Exam, Reflection and Learnings</small>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

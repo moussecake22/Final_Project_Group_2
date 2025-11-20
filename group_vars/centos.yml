@@ -1,0 +1,7 @@
+# group_vars/centos.yml
+docker_package_prereqs:
+  - yum-utils
+  - device-mapper-persistent-data
+  - lvm2
+docker_service_name: docker
+selinux_manage: true

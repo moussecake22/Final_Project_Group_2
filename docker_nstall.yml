@@ -1,0 +1,76 @@
+# docker_install.yml - include_tasks file used by build_image.yml
+- name: Install prerequisites on Debian/Ubuntu
+  apt:
+    name: "{{ docker_package_prereqs }}"
+    state: present
+    update_cache: yes
+  when: ansible_os_family == "Debian"
+  tags: docker_install
+
+- name: Add Docker's official GPG key (Ubuntu)
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+  when: ansible_os_family == "Debian"
+  tags: docker_install
+
+- name: Add Docker apt repository (Ubuntu)
+  apt_repository:
+    repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_lsb.codename }} stable"
+    state: present
+  when: ansible_os_family == "Debian"
+  tags: docker_install
+
+- name: Install docker engine (Ubuntu)
+  apt:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+    state: present
+    update_cache: yes
+  when: ansible_os_family == "Debian"
+  tags: docker_install
+
+- name: Install prerequisites on RedHat/CentOS
+  yum:
+    name: "{{ docker_package_prereqs }}"
+    state: present
+  when: ansible_os_family == "RedHat"
+  tags: docker_install
+
+- name: Add Docker repo on CentOS
+  yum_repository:
+    name: docker-ce-stable
+    description: Docker CE Stable - $basearch
+    baseurl: https://download.docker.com/linux/centos/docker-ce.repo
+    gpgcheck: yes
+    gpgkey: https://download.docker.com/linux/centos/gpg
+    enabled: yes
+  when: ansible_os_family == "RedHat"
+  tags: docker_install
+
+- name: Install docker engine (CentOS)
+  yum:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+    state: present
+  when: ansible_os_family == "RedHat"
+  tags: docker_install
+
+- name: Ensure python3 and pip present (for community.docker usage)
+  package:
+    name:
+      - python3
+      - python3-pip
+    state: present
+  tags: docker_install
+
+- name: Install docker python module for Ansible (pypi 'docker' package)
+  pip:
+    name: docker
+    state: present
+    executable: pip3
+  tags: docker_install
