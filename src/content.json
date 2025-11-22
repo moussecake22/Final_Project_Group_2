@@ -1,0 +1,30 @@
+{
+  "projectInfo": {
+    "title": "CPE 232 - Automating Server Management",
+    "course": "CPE 232 - CPE31S4",
+    "submissionDate": "2024-2025",
+    "description": "Student Portfolio Showcase"
+  },
+  "students": [
+    {
+      "name": "El Cid Bacong",
+      "id": "bacong",
+      "dataFile": "data/bacong.json"
+    },
+    {
+      "name": "Patrick Cruz",
+      "id": "cruz",
+      "dataFile": "data/cruz.json"
+    },
+    {
+      "name": "Ruud Van Apostol",
+      "id": "apostol",
+      "dataFile": "data/apostol.json"
+    },
+    {
+      "name": "Hazel Aillson Manuel",
+      "id": "manuel",
+      "dataFile": "data/manuel.json"
+    }
+  ]
+}

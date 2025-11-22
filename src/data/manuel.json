@@ -1,0 +1,56 @@
+{
+  "name": "Hazel Aillson Manuel",
+  "role": "All-Rounder (except paper)",
+  "prelim_hoa": [
+    {
+      "title": "Activity 0: Creating Virtual Machines in Microsoft Azure",
+      "file": "assets/manuel/prelim/Activity 0 - Creating Virtual Machines in Microsoft Azure - MANUEL.pdf"
+    },
+    {
+      "title": "Activity 2: SSH Key-Based Authentication and GIT Setup",
+      "file": "assets/manuel/prelim/Activity 2 - SSH Key-Based Authentication and GIT Setup-MANUEL.pdf"
+    },
+    {
+      "title": "Activity 3: Install SSH server on CentOS or RHEL 8",
+      "file": "assets/manuel/prelim/Activity 3 - Install SSH server on CentOS or RHEL 8 - MANUEL.pdf"
+    },
+    {
+      "title": "Activity 4: Running Elevated Ad hoc Commands",
+      "file": "assets/manuel/prelim/Activity 4 - Running Elevated Ad hoc Commands- MANUEL (1).pdf"
+    },
+    {
+      "title": "Activity 5: Consolidating Playbook plays",
+      "file": "assets/manuel/prelim/Activity 5 - Consolidating Playbook plays - MANUEL (1).pdf"
+    }
+  ],
+  "midterm_hoa": [
+    {
+      "title": "Activity 6: Targeting Specific Nodes",
+      "file": "assets/manuel/midterm/Activity 6 - Targeting Specific Nodes - MANUEL.pdf"
+    },
+    {
+      "title": "Activity 7: Managing Files and Creating Roles in Ansible",
+      "file": "assets/manuel/midterm/Activity 7 - Managing Files and Creating Roles in Ansible.pdf"
+    }
+  ],
+  "final_hoa": [
+    {
+      "title": "Activity 11: Containerization",
+      "file": "assets/manuel/final/Activity 11 Containerization - MANUEL-1.pdf"
+    }
+  ],
+  "exams": [
+    {
+      "title": "Prelim Exam",
+      "file": "assets/manuel/exams/Hands-on Prelim Exam - MANUEL.pdf"
+    },
+    {
+      "title": "Midterm Exam",
+      "file": "assets/manuel/exams/Midterm Skills Exam - CPE 232 - MANUEL.pdf"
+    },
+    {
+      "title": "Final Exam",
+      "file": "assets/manuel/exams/Final Exam Hands On - MANUEL-1.pdf"
+    }
+  ]
+}

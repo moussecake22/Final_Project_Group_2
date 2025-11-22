@@ -1,0 +1,16 @@
+# Minimal requirements for running local static server and Ansible
+# Python 3 is required
+
+# Serve local static files (optional, for testing)
+# Python 3's built-in http.server is enough, so this is optional
+
+# Ansible for automation
+ansible>=2.14
+
+# Optional: For Docker modules in Ansible
+docker>=6.1
+
+# Optional: Requests library if any custom scripts need it
+requests>=2.30
+
+

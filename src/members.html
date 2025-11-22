@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Portfolio</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div>
+                    <h1 class="title" id="student-name">Loading...</h1>
+                    <p class="subtitle" id="student-role"></p>
+                </div>
+                <nav class="nav">
+                    <a href="index.html" class="nav-link">← Back to Students</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div id="portfolio-content">
+            <!-- Content will be loaded here -->
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024-2025 CPE 232 Student Portfolio</p>
+        </div>
+    </footer>
+
+    <script>
+        async function loadStudentPortfolio() {
+            try {
+                const urlParams = new URLSearchParams(window.location.search);
+                const studentId = urlParams.get('id');
+                
+                if (!studentId) {
+                    throw new Error('No student ID provided');
+                }
+
+                const response = await fetch('content.json');
+                const mainData = await response.json();
+                
+                const student = mainData.students.find(s => s.id === studentId);
+                if (!student) {
+                    throw new Error('Student not found');
+                }
+
+                const studentResponse = await fetch(student.dataFile);
+                const studentData = await studentResponse.json();
+
+                document.getElementById('student-name').textContent = studentData.name;
+                document.getElementById('student-role').textContent = studentData.role || 'Student';
+                document.title = `${studentData.name} - Portfolio`;
+
+                const content = document.getElementById('portfolio-content');
+                let html = '';
+
+                // Prelim HOA Section
+                if (studentData.prelim_hoa && studentData.prelim_hoa.length > 0) {
+                    html += createSection('Prelim Hands-On Activities', studentData.prelim_hoa);
+                }
+
+                // Midterm HOA Section
+                if (studentData.midterm_hoa && studentData.midterm_hoa.length > 0) {
+                    html += createSection('Midterm Hands-On Activities', studentData.midterm_hoa);
+                }
+
+                // Final HOA Section
+                if (studentData.final_hoa && studentData.final_hoa.length > 0) {
+                    html += createSection('Final Hands-On Activities', studentData.final_hoa);
+                }
+
+                // Examinations Section
+                if (studentData.exams && studentData.exams.length > 0) {
+                    html += createSection('Examinations', studentData.exams);
+                }
+
+                // Reflection Section
+                if (studentData.reflection) {
+                    html += createReflectionSection(studentData.reflection);
+                }
+
+                content.innerHTML = html;
+
+            } catch (error) {
+                console.error('Error loading portfolio:', error);
+                document.getElementById('portfolio-content').innerHTML = `
+                    <div class="error-message">
+                        <h2>Error Loading Portfolio</h2>
+                        <p>${error.message}</p>
+                        <a href="index.html" class="btn">Back to Students</a>
+                    </div>
+                `;
+            }
+        }
+
+        function createSection(title, items) {
+            let html = `
+                <section class="portfolio-section">
+                    <h2 class="section-title">${title}</h2>
+                    <div class="activities-grid">
+            `;
+
+            items.forEach(item => {
+                html += `
+                    <div class="activity-card">
+                        <div class="activity-header">
+                            <h3>${item.title}</h3>
+                            ${item.github ? `<a href="${item.github}" target="_blank" class="github-link">View on GitHub</a>` : ''}
+                        </div>
+                        <div class="pdf-viewer">
+                            <iframe 
+                                src="${item.file}" 
+                                type="application/pdf"
+                                title="${item.title}"
+                                loading="lazy"
+                            ></iframe>
+                        </div>
+                        <div class="activity-footer">
+                            <a href="${item.file}" target="_blank" class="btn-secondary">Open in New Tab</a>
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += `
+                    </div>
+                </section>
+            `;
+
+            return html;
+        }
+
+        function createReflectionSection(reflection) {
+            const isTextFile = reflection.file.endsWith('.txt');
+            
+            if (isTextFile) {
+                return `
+                    <section class="portfolio-section">
+                        <h2 class="section-title">${reflection.title || 'Reflection'}</h2>
+                        <div class="reflection-card">
+                            <iframe 
+                                src="${reflection.file}" 
+                                title="Reflection"
+                                class="text-viewer"
+                            ></iframe>
+                            <div class="activity-footer">
+                                <a href="${reflection.file}" target="_blank" class="btn-secondary">Open in New Tab</a>
+                            </div>
+                        </div>
+                    </section>
+                `;
+            } else {
+                return `
+                    <section class="portfolio-section">
+                        <h2 class="section-title">${reflection.title || 'Reflection'}</h2>
+                        <div class="reflection-card">
+                            <div class="pdf-viewer">
+                                <iframe 
+                                    src="${reflection.file}" 
+                                    type="application/pdf"
+                                    title="Reflection"
+                                ></iframe>
+                            </div>
+                            <div class="activity-footer">
+                                <a href="${reflection.file}" target="_blank" class="btn-secondary">Open in New Tab</a>
+                            </div>
+                        </div>
+                    </section>
+                `;
+            }
+        }
+
+        loadStudentPortfolio();
+    </script>
+</body>
+</html>

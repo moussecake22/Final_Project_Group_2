@@ -1,0 +1,73 @@
+{
+  "name": "Ruud Van Apostol",
+  "role": "Documentation ; Personal Json File",
+  "prelim_hoa": [
+    {
+      "title": "1.1 Creating Virtual Machines",
+      "github": "https://github.com/qrvgapostol/qrvgapostol_FinalProject",
+      "file": "assets/apostol/prelim/1.1 Hands-on Activity - Creating Virtual Machines_Apostol.pdf"
+    },
+    {
+      "title": "2.1 SSH Key-Based Auth & GIT Setup",
+      "github": "https://github.com/qrvgapostol/qrvgapostol_FinalProject",
+      "file": "assets/apostol/prelim/Activity 2 - SSH Key-Based Authentication and GIT Setup_Apostol.pdf"
+    },
+    {
+      "title": "3.1 Install SSH Server (CentOS/RHEL8)",
+      "github": "https://github.com/qrvgapostol/qrvgapostol_FinalProject",
+      "file": "assets/apostol/prelim/3.1 Hands-on Activity - Install SSH server on CentOS or RHEL 8_Apostol.pdf"
+    },
+    {
+      "title": "4.1 Ansible Basics",
+      "github": "https://github.com/qrvgapostol/qrvgapostol_FinalProject",
+      "file": "assets/apostol/prelim/4.1 Hands-on Activity_ Ansible Basics_Apostol.pdf"
+    },
+    {
+      "title": "5.1 Consolidating Playbook plays",
+      "github": "https://github.com/qrvgapostol/qrvgapostol_FinalProject",
+      "file": "assets/apostol/prelim/Activity 5 - Consolidating Playbook plays_Apostol.pdf"
+    }
+  ],
+  "midterm_hoa": [
+    {
+      "title": "6.1 Targeting Specific Nodes",
+      "github": "https://github.com/qrvgapostol/qrvgapostol_FinalProject",
+      "file": "assets/apostol/midterm/Activity 6_Targeting Specific Nodes_Apostol.pdf"
+    },
+    {
+      "title": "7.1 Managing Files & Creating Roles",
+      "github": "https://github.com/qrvgapostol/qrvgapostol_FinalProject",
+      "file": "assets/apostol/midterm/Activity 7 - Managing Files and Creating Roles in Ansible_Apostol.pdf"
+    }
+  ],
+  "final_hoa": [
+    {
+      "title": "11.1 Containerization",
+      "github": "https://github.com/qrvgapostol/qrvgapostol_FinalProject",
+      "file": "assets/apostol/final/Hands-on Activity 11.1_ Containerization_Apostol.pdf"
+    },
+    {
+      "title": "12.1 Build Sample Web App (Docker)",
+      "github": "https://github.com/qrvgapostol/qrvgapostol_FinalProject",
+      "file": "assets/apostol/final/Hoa 12.1 (1).pdf"
+    }
+  ],
+  "exams": [
+    {
+      "title": "Prelim Exam",
+      "file": "assets/apostol/exams/Hoa 12.1 (1).pdf"
+    },
+    {
+      "title": "Midterm Exam",
+      "file": "assets/apostol/exams/Midterm Skills Exam - CPE 232_Apostol.pdf"
+    },
+    {
+      "title": "Final Exam",
+      "file": "assets/apostol/exams/Hands-on Final Exam_Apostol.pdf"
+    }
+  ],
+  "reflection": {
+    "title": "Reflection and Learnings",
+    "file": "assets/apostol/reflection/reflection.txt"
+  }
+}

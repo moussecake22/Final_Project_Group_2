@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CPE 232 Student Portfolio</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1 class="title">CPE 232 - Automating Server Management</h1>
+            <p class="subtitle">Student Portfolio Showcase</p>
+        </div>
+    </header>
+
+    <main class="container">
+     
+        <section class="students-grid" id="students-grid">
+            <!-- Student cards will be loaded here -->
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024-2025 CPE 232 Student Portfolio</p>
+        </div>
+    </footer>
+
+    <script>
+        async function loadStudents() {
+            try {
+                const response = await fetch('content.json');
+                const data = await response.json();
+                
+                const grid = document.getElementById('students-grid');
+                
+                data.students.forEach(student => {
+                    const card = document.createElement('a');
+                    card.href = `members.html?id=${student.id}`;
+                    card.className = 'student-card';
+                    card.innerHTML = `
+                        <div class="student-card-content">
+                            <h3>${student.name}</h3>
+                            <p class="view-portfolio">View Portfolio →</p>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+            } catch (error) {
+                console.error('Error loading students:', error);
+                document.getElementById('students-grid').innerHTML = '<p class="error">Error loading student data.</p>';
+            }
+        }
+
+        loadStudents();
+    </script>
+</body>
+</html>

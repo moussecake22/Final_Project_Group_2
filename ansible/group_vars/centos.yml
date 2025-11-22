@@ -1,0 +1,6 @@
+docker_packages:
+  - yum-utils
+  - device-mapper-persistent-data
+  - lvm2
+
+docker_repo: "https://download.docker.com/linux/centos/docker-ce.repo"

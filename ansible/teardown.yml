@@ -1,0 +1,79 @@
+---
+- name: Aggressive teardown for project artifacts (pattern match)
+  hosts: all_web
+  become: yes
+  gather_facts: no
+  vars:
+    project_pattern: "final_project_group2"   # change if your project name differs
+    remote_project_dir: "/opt/final_project_group2"
+
+  tasks:
+    - name: Show pattern and target
+      debug:
+        msg:
+          - "pattern: {{ project_pattern }}"
+          - "remote dir: {{ remote_project_dir }}"
+
+    - name: List containers containing pattern
+      shell: docker ps -a --format '{{'{{'}}.ID{{'}}'}} {{'{{'}}.Names{{'}}'}} {{'{{'}}.Image{{'}}'}}' | grep -i "{{ project_pattern }}" || true
+      register: list_containers
+      changed_when: false
+
+    - debug:
+        var: list_containers.stdout_lines
+
+    - name: Force remove containers matching pattern (by name or image)
+      shell: |
+        set -e || true
+        # remove by name match
+        docker ps -aq --filter "name={{ project_pattern }}" | xargs -r docker rm -f || true
+        # remove by ancestor/image match
+        docker ps -aq --filter "ancestor={{ project_pattern }}" | xargs -r docker rm -f || true
+        # also try grep approach for anything else:
+        docker ps -aq --format '{{'{{'}}.ID{{'}}'}} {{'{{'}}.Names{{'}}'}} {{'{{'}}.Image{{'}}'}}' | grep -i "{{ project_pattern }}" | awk '{print $1}' | xargs -r docker rm -f || true
+      register: removed_containers
+      failed_when: false
+      changed_when: false
+
+    - debug:
+        var: removed_containers.stdout_lines
+
+    - name: List images containing pattern
+      shell: docker images --format '{{'{{'}}.Repository{{'}}'}}:{{'{{'}}.Tag{{'}}'}} {{'{{'}}.ID{{'}}'}}' | grep -i "{{ project_pattern }}" || true
+      register: list_images
+      changed_when: false
+
+    - debug:
+        var: list_images.stdout_lines
+
+    - name: Force remove images matching pattern
+      shell: |
+        docker images --format '{{'{{'}}.Repository{{'}}'}}:{{'{{'}}.Tag{{'}}'}} {{'{{'}}.ID{{'}}'}}' | grep -i "{{ project_pattern }}" | awk '{print $2}' | xargs -r docker rmi -f || true
+      register: removed_images
+      failed_when: false
+      changed_when: false
+
+    - debug:
+        var: removed_images.stdout_lines
+
+    - name: Remove remote project dir if present
+      file:
+        path: "{{ remote_project_dir }}"
+        state: absent
+      register: dir_removed
+      failed_when: false
+
+    - debug:
+        var: dir_removed
+
+    - name: Show final docker ps and images
+      shell: |
+        echo "=== docker ps -a ==="
+        docker ps -a || true
+        echo "=== docker images ==="
+        docker images || true
+      register: final
+      changed_when: false
+
+    - debug:
+        var: final.stdout_lines

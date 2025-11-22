@@ -1,0 +1,56 @@
+{
+  "name": "Bacong",
+  "role": "Initial Coder andd UI Designer ; Personal Json File",
+  "prelim_hoa": [
+    {
+      "title": "Activity 1: Creating Virtual Machines in Microsoft Azure",
+      "file": "assets/bacong/prelim/Activity 1 - Creating Virtual Machines in Microsoft Azure - CPE31S4_Bacong.pdf"
+    },
+    {
+      "title": "Activity 2: SSH Key-Based Authentication and GIT Setup",
+      "file": "assets/bacong/prelim/Activity 2 - SSH Key-Based Authentication and GIT Setup-1 - CPE31S4_Bacong.pdf"
+    },
+    {
+      "title": "Activity 3: Install SSH server on CentOS or RHEL 8",
+      "file": "assets/bacong/prelim/Activity 3 - Install SSH server on CentOS or RHEL 8 (1) - CPE31S4_Bacong.pdf"
+    },
+    {
+      "title": "Activity 4: Running Elevated Ad hoc Commands",
+      "file": "assets/bacong/prelim/Activity 4 - Running Elevated Ad hoc Commands - CPE31S4_Bacong (2).pdf"
+    },
+    {
+      "title": "Activity 5: Consolidating Playbook plays",
+      "file": "assets/bacong/prelim/Activity 5 - Consolidating Playbook plays - CPE31S4_Bacong (1).pdf"
+    }
+  ],
+  "midterm_hoa": [
+    {
+      "title": "Activity 6: Targeting Specific Nodes",
+      "file": "assets/bacong/midterm/Activity 6 - Targeting Specific Nodes - CPE31S4_Bacong (1).pdf"
+    },
+    {
+      "title": "Activity 7: Managing Files and Creating Roles in Ansible",
+      "file": "assets/bacong/midterm/Activity 7 - Managing Files and Creating Roles in Ansible - CPE31S4_Bacong (1).pdf"
+    }
+  ],
+  "final_hoa": [
+    {
+      "title": "Activity 11: Containerization",
+      "file": "assets/bacong/final/Activity 11 Containerization - CPE31S4_Bacong.pdf"
+    }
+  ],
+  "exams": [
+    {
+      "title": "Prelim Exam",
+      "file": "assets/bacong/exams/Hands-on Prelim Exam - CPE31S4_Bacong.docx.pdf"
+    },
+    {
+      "title": "Midterm Skills Exam",
+      "file": "assets/bacong/exams/Midterm Skills Exam - CPE 232 - CPE31S4_Bacong.pdf"
+    },
+    {
+      "title": "Final Exam",
+      "file": "assets/bacong/exams/Final Exam Hand On _ CPE31S4_Bacong.docx.pdf"
+    }
+  ]
+}

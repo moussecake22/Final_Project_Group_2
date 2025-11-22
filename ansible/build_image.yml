@@ -1,0 +1,202 @@
+---
+- name: Build Docker image on all web servers (tar/unarchive + official docker)
+  hosts: all_web
+  become: yes
+  gather_facts: false
+
+  vars_files:
+    - group_vars/all.yml
+
+  pre_tasks:
+    ###########################################################################
+    # Connectivity sanity check
+    ###########################################################################
+    - name: Ensure host is reachable over SSH
+      wait_for_connection:
+        timeout: 20
+      tags: connectivity
+
+    ###########################################################################
+    # Ensure artifact directory exists
+    ###########################################################################
+    - name: Ensure remote artifact directory exists
+      file:
+        path: "{{ remote_artifact_dir }}"
+        state: directory
+        mode: '0755'
+      tags: prepare
+
+
+  # ###########################################################################
+  # # INSTALL DOCKER (Official Docker CE repo for Ubuntu/CentOS)
+  # ###########################################################################
+  # tasks:
+
+  #   # ===========================
+  #   # UBUNTU / DEBIAN
+  #   # ===========================
+  #   - name: Install Docker dependencies (Debian/Ubuntu)
+  #     apt:
+  #       name:
+  #         - ca-certificates
+  #         - curl
+  #         - gnupg
+  #         - lsb-release
+  #       state: present
+  #       update_cache: yes
+  #     when: ansible_os_family == "Debian"
+  #     tags: docker
+
+  #   - name: Add Docker official GPG key (Debian/Ubuntu)
+  #     apt_key:
+  #       url: https://download.docker.com/linux/ubuntu/gpg
+  #       state: present
+  #     when: ansible_os_family == "Debian"
+  #     tags: docker
+
+  #   - name: Add Docker repository (Debian/Ubuntu)
+  #     apt_repository:
+  #       repo: "deb [arch={{ ansible_architecture }}] https://download.docker.com/linux/ubuntu {{ ansible_lsb.codename }} stable"
+  #       state: present
+  #     when: ansible_os_family == "Debian"
+  #     tags: docker
+
+  #   - name: Remove conflicting containerd package
+  #     apt:
+  #       name: containerd
+  #       state: absent
+  #     when: ansible_os_family == "Debian"
+  #     tags: docker
+
+  #   - name: Install Docker CE (Debian/Ubuntu)
+  #     apt:
+  #       name:
+  #         - docker-ce
+  #         - docker-ce-cli
+  #         - containerd.io
+  #       state: present
+  #       update_cache: yes
+  #     when: ansible_os_family == "Debian"
+  #     tags: docker
+
+  #   # ===========================
+  #   # CENTOS / RHEL
+  #   # ===========================
+  #   - name: Install yum utils (CentOS/RHEL)
+  #     yum:
+  #       name: yum-utils
+  #       state: present
+  #     when: ansible_os_family == "RedHat"
+  #     tags: docker
+
+  #   - name: Add Docker repository (CentOS/RHEL)
+  #     command: >
+  #       yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+  #     args:
+  #       creates: /etc/yum.repos.d/docker-ce.repo
+  #     when: ansible_os_family == "RedHat"
+  #     tags: docker
+
+  #   - name: Install Docker CE (CentOS/RHEL)
+  #     yum:
+  #       name:
+  #         - docker-ce
+  #         - docker-ce-cli
+  #         - containerd.io
+  #       state: present
+  #     when: ansible_os_family == "RedHat"
+  #     tags: docker
+
+    ###########################################################################
+    # START DOCKER
+    ###########################################################################
+    - name: Ensure docker is enabled and running
+      service:
+        name: docker
+        state: started
+        enabled: yes
+      tags: docker
+
+    ###########################################################################
+    # PACK WEB APP (tar) ON CONTROLLER — run once
+    ###########################################################################
+    - name: Create tar archive of src on controller
+      delegate_to: localhost
+      run_once: true
+      become: false
+      command: >
+        bash -lc "cd {{ playbook_dir }}/../ && tar -czf /tmp/src.tar.gz -C . src"
+      args:
+        creates: /tmp/src.tar.gz
+      tags: package
+
+    ###########################################################################
+    # COPY ARTIFACTS TO TARGET
+    ###########################################################################
+    - name: Copy src archive to remote host
+      copy:
+        src: /tmp/src.tar.gz
+        dest: /tmp/src.tar.gz
+        mode: '0644'
+      tags: package
+
+    - name: Ensure src subdirectory exists inside project directory
+      file:
+        path: "{{ remote_project_dir }}/src"
+        state: directory
+        mode: '0755'
+
+    - name: Move uploaded src.tar.gz into src folder
+      command: mv /tmp/src.tar.gz "{{ remote_project_dir }}/src/src.tar.gz"
+      args:
+        removes: /tmp/src.tar.gz
+        creates: "{{ remote_project_dir }}/src/src.tar.gz"
+
+    - name: Extract web artifacts inside src/ folder
+      unarchive:
+        src: "{{ remote_project_dir }}/src/src.tar.gz"
+        dest: "{{ remote_project_dir }}/src"
+        remote_src: yes
+        extra_opts:
+          - "--strip-components=1"
+
+    - name: Remove temp archive
+      file:
+        path: /tmp/src.tar.gz
+        state: absent
+      tags: package
+
+    ###########################################################################
+    # COPY DOCKERFILE + NGINX CONFIG
+    ###########################################################################
+    - name: Copy Dockerfile
+      copy:
+        src: "../Dockerfile"
+        dest: "{{ remote_artifact_dir }}/Dockerfile"
+        mode: "0644"
+      tags: package
+
+    - name: Copy nginx.conf
+      copy:
+        src: "../nginx.conf"
+        dest: "{{ remote_artifact_dir }}/nginx.conf"
+        mode: "0644"
+      tags: package
+
+    ###########################################################################
+    # BUILD DOCKER IMAGE
+    ###########################################################################
+    - name: Build Docker image
+      command: >
+        docker build -t {{ docker_image_name }}:{{ version }} .
+      args:
+        chdir: "{{ remote_artifact_dir }}"
+      register: docker_build
+      failed_when: docker_build.rc != 0
+      tags: build
+
+    - name: Print docker build output (debug)
+      debug:
+        var: docker_build.stdout_lines
+      when: docker_build is defined
+      tags: build

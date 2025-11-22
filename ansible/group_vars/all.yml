@@ -1,0 +1,8 @@
+# ansible/group_vars/all.yml
+project_name: "Final_Project_Group2"
+docker_image_name: "final_project_group2"
+version: "1.0"
+remote_artifact_dir: "/opt/final_project_group2"
+remote_project_dir: "/opt/final_project_group2"
+container_port: 80
+host_port: 8080

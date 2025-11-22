@@ -1,0 +1,73 @@
+{
+  "name": "Patrick Cruz",
+  "role": "Docker Implementer ; Personal Json File",
+  "prelim_hoa": [
+    {
+      "title": "1.1 Creating Virtual Machines",
+      "github": "https://github.com/Patrickcruz14/Cruz",
+      "file": "assets/cruz/prelim/1.1 Hands-on Activity - Creating Virtual Machines.pdf"
+    },
+    {
+      "title": "2.1 SSH Key-Based Auth & GIT Setup",
+      "github": "https://github.com/Patrickcruz14/Cruz",
+      "file": "assets/cruz/prelim/2.1 Hands-on Activity - SSH Key-Based Authentication and GIT Setup.pdf"
+    },
+    {
+      "title": "3.1 Install SSH Server (CentOS/RHEL8)",
+      "github": "https://github.com/Patrickcruz14/Cruz",
+      "file": "assets/cruz/prelim/3.1 Hands-on Activity - Install SSH server on CentOS or RHEL8.pdf"
+    },
+    {
+      "title": "4.1 Ansible Basics",
+      "github": "https://github.com/Patrickcruz14/Cruz",
+      "file": "assets/cruz/prelim/4.1 Hands-on Activity_ Ansible Basics (2).pdf"
+    },
+    {
+      "title": "5.1 Implement Ansible Roles",
+      "github": "https://github.com/Patrickcruz14/Cruz",
+      "file": "assets/cruz/prelim/Hands-on Activity 5.1: Implement Ansible roles in playbooks.pdf"
+    }
+  ],
+  "midterm_hoa": [
+    {
+      "title": "6.1 Targeting Specific Nodes",
+      "github": "https://github.com/Patrickcruz14/Cruz",
+      "file": "assets/cruz/midterm/Activity 6 - Targeting Specific Nodes(1) (2) (1).pdf"
+    },
+    {
+      "title": "7.1 Managing Files & Creating Roles",
+      "github": "https://github.com/Patrickcruz14/Cruz",
+      "file": "assets/cruz/midterm/Activity 7 - Managing Files and Creating Roles in Ansible (1) (1).pdf"
+    }
+  ],
+  "final_hoa": [
+    {
+      "title": "11.1 Containerization",
+      "github": "https://github.com/Patrickcruz14/Cruz",
+      "file": "assets/cruz/final/Hands-on Activity 11.1: Containerization.pdf"
+    },
+    {
+      "title": "12.1 Build Sample Web App (Docker)",
+      "github": "https://github.com/Patrickcruz14/Cruz",
+      "file": "assets/cruz/final/Hands-on Activity 12.1 Build a Sample Web App in a Docker Container.pdf"
+    }
+  ],
+  "exams": [
+    {
+      "title": "Prelim Exam",
+      "file": "assets/cruz/exams/PRELIM EXAM.pdf"
+    },
+    {
+      "title": "Midterm Exam",
+      "file": "assets/cruz/exams/Midterm Skills Exam - CPE 232 .pdf"
+    },
+    {
+      "title": "Final Exam",
+      "file": "assets/cruz/exams/Final_Exam_Cruz (1).pdf"
+    }
+  ],
+  "reflection": {
+    "title": "Reflection and Learnings",
+    "file": "assets/cruz/reflection/reflection.txt"
+  }
+}

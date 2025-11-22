@@ -1,0 +1,198 @@
+/* styles.css - modern, minimal, responsive */
+
+:root{
+  --bg:#f7fbff;
+  --card:#fff;
+  --accent:#2b7be4;
+  --muted:#6b7280;
+  --shadow: 0 6px 20px rgba(20,30,50,.08);
+  --radius:12px;
+  --gap:20px;
+  font-family: Inter, "Segoe UI", Roboto, system-ui, -apple-system, "Helvetica Neue", Arial;
+  color-scheme: light;
+}
+
+/* Page layout */
+body {
+  margin:0;
+  background: linear-gradient(180deg,#f3f8ff 0%, #ffffff 30%);
+  color:#111827;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  line-height:1.5;
+}
+
+.container{
+  width:90%;
+  max-width:1100px;
+  margin:0 auto;
+}
+
+/* Header */
+.site-header{
+  background: linear-gradient(90deg, #2f80ed 0%, #2b6ad9 100%);
+  color:#fff;
+  padding:48px 0 36px;
+  margin-bottom:24px;
+  border-bottom-left-radius:18px;
+  border-bottom-right-radius:18px;
+  box-shadow: 0 6px 30px rgba(41,61,114,0.08);
+}
+.project-title{
+  margin:0;
+  font-weight:700;
+  font-size:40px;
+  letter-spacing: -.02em;
+}
+.project-sub{
+  margin:6px 0 0;
+  opacity:.95;
+  font-size:16px;
+}
+.project-subtle{
+  margin:4px 0 0;
+  opacity:.9;
+  font-size:14px;
+}
+
+/* Members section */
+.members-section{
+  margin-bottom:40px;
+}
+.members-section h2{
+  font-size:20px;
+  margin:0 0 12px;
+}
+
+/* Card grid */
+.cards-grid{
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--gap);
+}
+
+/* Card */
+.card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding:18px;
+  box-shadow: var(--shadow);
+  transition: transform .18s ease, box-shadow .18s ease;
+  cursor: pointer;
+  overflow: hidden;
+  border:1px solid rgba(15,23,42,0.04);
+}
+
+.card:focus-within,
+.card:hover{
+  transform: translateY(-6px);
+  box-shadow: 0 20px 50px rgba(20,30,50,0.12);
+}
+
+/* basic info lines */
+.card .name { font-weight:700; font-size:18px; margin-bottom:6px;}
+.card .meta{ font-size:13px; color:var(--muted); margin:6px 0;}
+.card a.github{
+  display:inline-block;
+  margin-top:8px;
+  color:var(--accent);
+  text-decoration:none;
+  font-weight:600;
+}
+.card a.github:hover{ text-decoration:underline;}
+
+/* Expanded area */
+.card .expanded{
+  margin-top:16px;
+  border-top:1px dashed rgba(0,0,0,0.06);
+  padding-top:16px;
+  max-height:0;
+  overflow:hidden;
+  transition: max-height .35s cubic-bezier(.2,.9,.2,1);
+}
+
+/* when opened */
+.card.open .expanded{
+  max-height:1200px; /* large enough to expand */
+}
+
+/* Section blocks inside expanded */
+.section-block{
+  margin-bottom:12px;
+  border-radius:10px;
+  overflow:hidden;
+  background:linear-gradient(180deg,#ffffff,#fbfdff);
+  border:1px solid rgba(15,23,42,0.03);
+}
+.section-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:10px 12px;
+  border-bottom:1px solid rgba(15,23,42,0.03);
+}
+.section-header h3{
+  margin:0;
+  font-size:15px;
+}
+.section-header .toggle-section{
+  background:none;
+  border:0;
+  color:var(--accent);
+  cursor:pointer;
+  font-weight:600;
+}
+
+/* Section content area */
+.section-content{
+  padding:10px 12px;
+  display:block;
+}
+
+/* Activity row (folder dropdown) */
+.activity{
+  display:flex;
+  gap:12px;
+  align-items:flex-start;
+  padding:10px;
+  border-radius:8px;
+  margin-bottom:8px;
+  background: #fff;
+  border:1px solid rgba(11,20,40,0.03);
+  transition: background .12s ease;
+}
+.activity .left{flex:1}
+.activity .title{font-weight:600; font-size:14px}
+.activity .sub{ color:var(--muted); font-size:13px; margin-top:6px}
+.activity .links{ margin-top:8px;}
+.activity .links a{ color:var(--accent); text-decoration:none; margin-right:10px}
+.activity .preview{
+  margin-top:8px;
+  border-radius:8px;
+  background:#fafcff;
+  padding:8px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace;
+  font-size:13px;
+  color:#0f172a;
+  max-height:220px;
+  overflow:auto;
+  border:1px solid rgba(43,123,228,0.06);
+}
+
+/* Buttons & small helpers */
+.small-btn{
+  display:inline-block;
+  background:transparent;
+  border:1px solid rgba(11,20,40,0.04);
+  padding:6px 10px;
+  border-radius:8px;
+  cursor:pointer;
+  color:var(--muted);
+  font-size:13px;
+}
+
+/* Responsive adjustments */
+@media (max-width:720px){
+  .project-title{ font-size:28px;}
+  .card{ padding:14px;}
+}

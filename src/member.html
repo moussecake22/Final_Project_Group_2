@@ -1,0 +1,117 @@
+<!-- src/member.html -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Member Portfolio</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <h1 id="project-title">Team Portfolio</h1>
+      <p id="project-sub" class="muted"></p>
+      <nav class="top-nav"><a href="members.html">&larr; Members</a> • <a id="repo-link" href="#" target="_blank" rel="noopener">Project Repo</a></nav>
+    </div>
+  </header>
+
+  <main class="container" id="member-root">
+    <section id="member-hero" class="hero"></section>
+    <section id="activities" class="activities"></section>
+  </main>
+
+  <script>
+  // small helper
+  async function loadJSON(url){
+    const r = await fetch(url);
+    if(!r.ok) throw new Error(`${url} fetch failed: ${r.status}`);
+    return r.json();
+  }
+
+  (async function renderMember(){
+    try{
+      const params = new URLSearchParams(location.search);
+      const requested = params.get('name');
+      if(!requested){
+        document.getElementById('member-root').innerHTML = '<p>No member specified. Go back to <a href="members.html">Members</a>.</p>';
+        return;
+      }
+
+      const content = await loadJSON('content.json');
+      document.getElementById('project-title').textContent = content.projectInfo.projectTitle;
+      document.getElementById('project-sub').textContent = `${content.projectInfo.groupName} — ${content.projectInfo.course} • submitted ${content.projectInfo.submissionDate}`;
+      document.getElementById('repo-link').href = content.projectInfo.github;
+
+      const memberRef = content.members.find(m => m.name === requested);
+      if(!memberRef){
+        document.getElementById('member-root').innerHTML = `<p>Member "${requested}" not found. Go back to <a href="members.html">Members</a>.</p>`;
+        return;
+      }
+
+      const memberData = await loadJSON(memberRef.file);
+
+      // Hero
+      const hero = document.getElementById('member-hero');
+      hero.innerHTML = `<div class="hero-left"><h2>${memberData.name}</h2><p class="muted">${memberData.role || ''}</p></div>`;
+
+      const activities = document.getElementById('activities');
+
+      function addSection(title, list){
+        if(!list || list.length === 0) return;
+        const section = document.createElement('section');
+        section.className = 'section';
+        section.innerHTML = `<h3>${title}</h3>`;
+        const grid = document.createElement('div');
+        grid.className = 'grid-2';
+
+        list.forEach(item => {
+          const card = document.createElement('div');
+          card.className = 'act-card';
+
+          // viewer
+          let viewer = '';
+          if(item.file && item.file.toLowerCase().endsWith('.pdf')){
+            viewer = `<div class="pdf-wrap"><iframe src="${item.file}" title="${item.title}" loading="lazy"></iframe></div>`;
+          } else if(item.file){
+            viewer = `<p><a href="${item.file}" target="_blank" rel="noopener">Open file</a></p>`;
+          }
+
+          const githubLink = item.github ? `<p><a href="${item.github}" target="_blank" rel="noopener">View on GitHub</a></p>` : '';
+
+          card.innerHTML = `
+            <div class="card-head"><h4>${item.title}</h4></div>
+            <div class="card-body">${githubLink}${viewer}</div>
+          `;
+          grid.appendChild(card);
+        });
+        section.appendChild(grid);
+        activities.appendChild(section);
+      }
+
+      addSection('Prelim HOA', memberData.prelim_hoa);
+      addSection('Midterm HOA', memberData.midterm_hoa);
+      addSection('Final HOA', memberData.final_hoa);
+      addSection('Examinations', memberData.exams);
+
+      // Reflection
+      if(memberData.reflection && memberData.reflection.file){
+        const rsec = document.createElement('section');
+        rsec.className = 'section';
+        rsec.innerHTML = `<h3>Reflection</h3>`;
+        const card = document.createElement('div'); card.className='act-card';
+        card.innerHTML = `
+          <div class="card-head"><h4>${memberData.reflection.title || 'Reflection'}</h4></div>
+          <div class="card-body"><div class="pdf-wrap"><iframe src="${memberData.reflection.file}" title="Reflection" loading="lazy"></iframe></div></div>
+        `;
+        rsec.appendChild(card);
+        activities.appendChild(rsec);
+      }
+    }catch(err){
+      console.error(err);
+      document.getElementById('member-root').innerHTML = `<p>Error: ${err.message}</p>`;
+    }
+  })();
+  </script>
+</body>
+</html>

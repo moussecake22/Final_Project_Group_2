@@ -1,0 +1,15 @@
+Reflection and Learnings - MANUEL
+
+Throughout the entire semester, every activity—from the early prelim tasks up to the final project—helped us build a strong foundation in system administration. Each hands-on activity contributed to our understanding step-by-step, allowing us to apply concepts progressively until we were ready to complete the fully automated final project.
+
+During the Prelim HOAs, we learned the fundamentals of setting up virtual machines, configuring SSH access, working with Git, and managing basic Linux services. These activities helped us understand the importance of secure authentication, consistent configurations, and proper system setup—skills that became essential later when we deployed our project to multiple servers.
+
+In the Midterm HOAs, we moved deeper into automation using Ansible. We practiced writing playbooks, creating roles, managing files, and targeting specific nodes. These activities taught us how to think in terms of infrastructure as code, how to design repeatable configurations, and how automation can prevent human error. We also understood how Ansible handles different operating systems and remote execution, which prepared us for multi-VM deployments.
+
+By the Final HOAs, we were introduced to containerization and Docker. Here, we learned how to package applications into images, run containers, and understand how Docker interacts with the host system. This became the core foundation for building and deploying our final project.
+
+The Examinations further reinforced these lessons by testing our ability to apply them independently. They required not only technical knowledge but also the ability to troubleshoot and perform tasks under time pressure.
+
+Finally, the Final Project brought everything together. We applied VM setup, SSH configuration, Git usage, Ansible automation, Docker containerization, and service deployment into one complete system. We learned how to collaborate as a group, debug complex issues, and think like System Administrators—automating processes, ensuring repeatability, and deploying consistently across multiple machines.
+
+Overall, this course taught us not only technical skills but also discipline, attention to detail, and the value of systematic troubleshooting. Each activity contributed a crucial piece, and completing the final project proved how much we had grown from the beginning of the semester.
