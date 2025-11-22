@@ -1,12 +1,12 @@
 ---
-- name: Deploy and run web container on all web servers (robust)
+- name: Deploy and run web container on all web servers
   hosts: all_web
   become: yes
-  gather_facts: false
+  gather_facts: true
+
   vars_files:
     - group_vars/all.yml
 
-  # Map and provide safe defaults
   vars:
     docker_image_name: "{{ docker_image_name | default('final_project_group2') }}"
     version: "{{ version | default('1.0') }}"
@@ -15,80 +15,33 @@
     container_port: "{{ container_port | default(80) }}"
     container_full_name: "{{ project_name }}-container"
     image_full: "{{ docker_image_name }}:{{ version }}"
+    site_src: "{{ remote_project_dir }}/src"
 
   tasks:
-    - name: Debug run variables
-      debug:
-        msg:
-          - "Target: {{ inventory_hostname }}"
-          - "Image: {{ image_full }}"
-          - "Container name: {{ container_full_name }}"
-          - "Host port -> Container port: {{ host_port }} -> {{ container_port }}"
-
-    - name: Ensure image exists on host
-      shell: docker images -q "{{ image_full }}" || true
-      register: image_check
-      changed_when: false
-
-    - name: Fail early if image not found
-      fail:
-        msg: "Docker image {{ image_full }} not found on {{ inventory_hostname }}. Run 'make build' or ensure image is present."
-      when: image_check.stdout|trim == ""
-
-    - name: Stop and remove existing container if present (safe)
+    ##################################################################
+    # Stop and remove any old container
+    ##################################################################
+    - name: Remove existing container if present
       shell: docker rm -f "{{ container_full_name }}" || true
-      register: rm_result
       changed_when: false
 
-    #################################################################
-    # Try using community.docker.docker_container if available
-    # If it's not available or fails, we fall back to a shell docker run
     ##################################################################
-    - name: Try to run container using community.docker.docker_container
-      block:
-        - name: Run container (community.docker)
-          community.docker.docker_container:
-            name: "{{ container_full_name }}"
-            image: "{{ image_full }}"
-            state: started
-            restart_policy: always
-            published_ports:
-              - "{{ host_port }}:{{ container_port }}"
-            restart: yes
-            detach: true
-          register: cd_result
-          failed_when: false   # capture result, we'll handle failures
-      rescue:
-        - name: Mark cd_result as failed when module missing or errors
-          set_fact:
-            cd_result_failed: true
-
-    - name: If community.docker succeeded, set flag
-      set_fact:
-        used_community_module: true
-      when: (cd_result is defined) and (cd_result is not failed) and (cd_result is not skipped)
-
-    - name: Fallback - run container via docker run shell if community.docker failed or not present
-      when: used_community_module is not defined
-      block:
-        - name: Run container via docker CLI (fallback)
-          shell: |
-            docker run -d \
-              --name {{ container_full_name }} \
-              --restart always \
-              -p {{ host_port }}:{{ container_port }} \
-              {{ image_full }}
-          register: run_result
-          failed_when: run_result.rc != 0
-          changed_when: run_result.rc == 0
-
-        - name: Show fallback run result (debug)
-          debug:
-            var: run_result.stdout_lines
-          when: run_result is defined
+    # Run container via docker CLI
+    ##################################################################
+    - name: Run container via docker CLI
+      shell: |
+        docker run -d \
+          --name {{ container_full_name }} \
+          --restart always \
+          -p {{ host_port }}:{{ container_port }} \
+          -v {{ site_src }}:/usr/share/nginx/html:ro \
+          {{ image_full }}
+      register: run_result
+      failed_when: run_result.rc != 0
+      changed_when: run_result.rc == 0
 
     ##################################################################
-    # Verify container is running and wait for HTTP on the host port
+    # Verify container status
     ##################################################################
     - name: Show container status
       shell: docker ps --filter "name={{ container_full_name }}" --format "table {{'{{'}}.Names{{'}}'}}\t{{'{{'}}.Image{{'}}'}}\t{{'{{'}}.Status{{'}}'}}\t{{'{{'}}.Ports{{'}}'}}"
@@ -99,3 +52,12 @@
       debug:
         var: ps_output.stdout_lines
 
+    ##################################################################
+    # Wait until HTTP responds on host port
+    ##################################################################
+    - name: Wait for HTTP service on host port
+      wait_for:
+        host: "{{ inventory_hostname }}"
+        port: "{{ host_port }}"
+        delay: 5
+        timeout: 30

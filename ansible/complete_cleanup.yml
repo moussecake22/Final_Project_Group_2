@@ -1,85 +1,49 @@
 ---
-# Complete cleanup playbook - stops and removes all Docker containers, images, and volumes
+# Complete Docker cleanup playbook
 #
 # USAGE:
-#   With password prompt: ansible-playbook ansible/complete_cleanup.yml -i ansible/inventory.ini -K
-#   Without password (if passwordless sudo configured): ansible-playbook ansible/complete_cleanup.yml -i ansible/inventory.ini
+#   ansible-playbook ansible/complete_cleanup.yml -i ansible/inventory.ini -K
 #
-# If you get "Timeout waiting for privilege escalation", add -K flag to prompt for password
+# Requires: community.docker collection
+#   ansible-galaxy collection install community.docker
 
 - name: Complete Docker Cleanup - Stop and Remove Everything
-  hosts: all
+  hosts: all_web
   become: yes
   gather_facts: yes
 
   tasks:
     ###########################################################################
-    # STOP ALL RUNNING CONTAINERS
-    ###########################################################################
-    - name: Get list of all containers (running and stopped)
-      shell: docker ps -aq
-      register: all_containers
-      ignore_errors: yes
-      changed_when: false
-
-    - name: Stop all running containers
-      shell: docker stop $(docker ps -aq)
-      when: all_containers.stdout != ""
-      ignore_errors: yes
-      register: stop_result
-
-    - name: Display stop result
-      debug:
-        msg: "Containers stopped"
-      when: stop_result is defined and stop_result.rc == 0
-
-    ###########################################################################
     # REMOVE ALL CONTAINERS
     ###########################################################################
-    - name: Remove all containers (running and stopped)
-      shell: docker rm -f $(docker ps -aq)
-      when: all_containers.stdout != ""
-      ignore_errors: yes
-      register: remove_result
-
-    - name: Display remove result
-      debug:
-        msg: "Containers removed"
-      when: remove_result is defined and remove_result.rc == 0
+    - name: Remove all containers
+      community.docker.docker_container:
+        name: all
+        state: absent
 
     ###########################################################################
-    # REMOVE ALL IMAGES (OPTIONAL - UNCOMMENT IF NEEDED)
+    # REMOVE ALL IMAGES
     ###########################################################################
-    - name: Get list of all images
-      shell: docker images -q
-      register: all_images
-      ignore_errors: yes
-      changed_when: false
-
-    - name: Remove all Docker images
-      shell: docker rmi -f $(docker images -q)
-      when: all_images.stdout != ""
-      ignore_errors: yes
-      register: rmi_result
-
-    - name: Display image removal result
-      debug:
-        msg: "Images removed"
-      when: rmi_result is defined and rmi_result.rc == 0
+    - name: Remove all images
+      community.docker.docker_image:
+        name: all
+        state: absent
 
     ###########################################################################
-    # CLEAN UP VOLUMES (OPTIONAL)
+    # REMOVE ALL VOLUMES
     ###########################################################################
-    - name: Remove all Docker volumes
-      shell: docker volume prune -f
-      ignore_errors: yes
+    - name: Remove all volumes
+      community.docker.docker_volume:
+        name: all
+        state: absent
 
     ###########################################################################
-    # CLEAN UP NETWORKS (OPTIONAL)
+    # REMOVE ALL NETWORKS
     ###########################################################################
-    - name: Remove all unused Docker networks
-      shell: docker network prune -f
-      ignore_errors: yes
+    - name: Prune unused networks
+      community.docker.docker_network:
+        name: all
+        state: absent
 
     ###########################################################################
     # SYSTEM PRUNE - COMPLETE CLEANUP
@@ -87,30 +51,22 @@
     - name: Docker system prune - remove all unused data
       shell: docker system prune -af --volumes
       ignore_errors: yes
-      register: prune_result
-
-    - name: Display prune result
-      debug:
-        msg: "Docker system cleaned"
-      when: prune_result is defined and prune_result.rc == 0
 
     ###########################################################################
     # VERIFY CLEANUP
     ###########################################################################
     - name: Verify no containers are running
-      shell: docker ps
+      shell: docker ps -q
       register: final_ps
       changed_when: false
 
-    - name: Display final docker ps output
+    - name: Show docker ps output
       debug:
-        msg: "{{ final_ps.stdout_lines }}"
+        var: final_ps.stdout_lines
 
     - name: Verify cleanup success
       assert:
         that:
-          - "'CONTAINER ID' in final_ps.stdout"
-          - "final_ps.stdout_lines | length <= 1"
-        success_msg: "✅ Cleanup successful - docker ps is empty"
-        fail_msg: "⚠️  Some containers may still be running"
-      ignore_errors: yes
+          - final_ps.stdout_lines | length == 0
+        success_msg: "✅ Cleanup successful - no containers remain"
+        fail_msg: "⚠️ Some containers may still be running"

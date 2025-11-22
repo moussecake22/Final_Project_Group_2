@@ -4,6 +4,7 @@ INVENTORY=./ansible/inventory.ini
 # Ansible playbooks
 BUILD_PLAYBOOK=ansible/build_image.yml
 RUN_PLAYBOOK=ansible/run_containers.yml
+CLEAN_PLAYBOOK=ansible/complete_cleanup.yml
 
 # Docker container name (used for cleanup)
 CONTAINER_NAME=portfolio
@@ -18,12 +19,12 @@ build:
 
 # Run containers
 run:
-	ansible-playbook -i $(INVENTORY) $(RUN_PLAYBOOK) -v -K
+	ansible-playbook -i $(INVENTORY) $(RUN_PLAYBOOK) -K
 
 
 # Cleanup dangling images on all hosts
 cleanup:
-	ansible all_web -i $(INVENTORY) -b -m shell -a "docker image prune -f"
+	ansible-playbook -i $(INVENTORY) $(CLEAN_PLAYBOOK) -K
 
 # Deploy: build + run
 deploy: build run
